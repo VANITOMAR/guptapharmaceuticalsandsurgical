@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart | Gupta's Medicos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ✅ Navbar (optional to include) -->
+  <nav class="navbar">
+    <div class="logo">Gupta's Medicos</div>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="products.html">🧴 Products</a></li>
+      <li><a href="about.html">📝 About</a></li>
+      <li><a href="contact.html">📞 Contact</a></li>
+      <li><a href="login.html">🔑 Login</a></li>
+      <li><a href="cart.html" class="active-link">🛒 Cart</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ Cart Content -->
+  <div class="main-content cart-container">
+    <h2>Your Cart</h2>
+    <ul id="cart-items"></ul>
+    <p><strong>Total:</strong> ₹<span id="total">0</span></p>
+
+    <button onclick="clearCart()">Clear Cart</button>
+  </div>
+
+  <!-- ✅ Scripts -->
+   <script>
+    /* --- render cart --- */
+    const cart    = JSON.parse(localStorage.getItem('cart')) || [];
+    const listEl  = document.getElementById('cart-items');
+    const totalEl = document.getElementById('total');
+
+    function render() {
+      listEl.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${item.name}</span>
+          <div class="qty-box">
+            <button class="qty-btn" data-idx="${idx}" data-op="minus">−</button>
+            <span class="qty">${item.qty}</span>
+            <button class="qty-btn" data-idx="${idx}" data-op="plus">+</button>
+          </div>
+          <span>₹${item.price * item.qty}</span>
+        `;
+        listEl.appendChild(li);
+        total += item.price * item.qty;
+      });
+
+      totalEl.textContent = total;
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    /* --- quantity buttons --- */
+    listEl.addEventListener('click', e => {
+      if (!e.target.classList.contains('qty-btn')) return;
+      const { idx, op } = e.target.dataset;
+      if (op === 'plus')  cart[idx].qty += 1;
+      if (op === 'minus') cart[idx].qty -= 1;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);   // remove line
+      render();
+    });
+
+    function clearCart() {
+      cart.length = 0;
+      render();
+    }
+
+    render();
+  </script>
+
+</body>
+</html>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+    
+    <!-- ✅ Footer -->
+    <footer class="site-footer">
+        © 2025 Gupta’s Medicos  |  All rights reserved
+    </footer>
